@@ -37,8 +37,7 @@ void loop() {
     c = customKeypad.getKey();
   }
 
-  Serial.println(c);
-  /*while(c >= '0' && c <= '9') {
+  while(c >= '0' && c <= '9') {
     num1 += c;
     Serial.println(num1);
     c = customKeypad.getKey();
@@ -51,7 +50,7 @@ void loop() {
   while(num1[i] != '\0') {
     number = (number * 10) + (num1[i] - '0');
     i++;
-  }*/;
+  }
   
 }
 
