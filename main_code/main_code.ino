@@ -46,6 +46,7 @@ void loop() {
   number2 = 0;
   column_counter_1 = 0;
   column_counter_2 = 0;
+  lcd.clear();
   
   char c = customKeypad.getKey();
   while(c == NO_KEY) {
@@ -54,15 +55,25 @@ void loop() {
 
   lcd.setCursor(0,0);
   while(c >= '0' && c <= '9') {
+
+    if(num1.length() >= 10) {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("TOO LONG!");
+      return;
+    }
+
     num1 += c;
-    lcd.print(num1);
+    lcd.print(c);
     column_counter_1++;
     c = customKeypad.getKey();
     while(c == NO_KEY) {
       c = customKeypad.getKey();
     }
-    lcd.setCursor(0, 0);
+    lcd.setCursor(num1.length(), 0);
   }
+
+  if(c=='C') return;
 
   int i = 0;
   while(num1[i] != '\0') {
@@ -70,7 +81,7 @@ void loop() {
     i++;
   }
 
-  lcd.setCursor(column_counter_1, 0);
+  lcd.setCursor(num1.length(), 0);
   lcd.print(c);
 
 
@@ -88,7 +99,7 @@ void loop() {
     while(d == NO_KEY) {
       d = customKeypad.getKey();
     }
-    lcd.setCursor(0, 1);
+    lcd.setCursor(num2.length(), 1);
   }
 
   int j = 0;
@@ -96,6 +107,47 @@ void loop() {
     number2 = (number2*10)+(num2[j] - '0');
     j++;
   }
+
+  if(d == 'C') return;
+
+  float answer;
+  switch(c) {
+    case '+':
+      answer = number1 + number2;
+    break;
+
+    case '-':
+      answer = number1-number2;
+    break;
+
+    case '*':
+      answer = number1 * number2;
+    break;
+
+    case '/':
+      if(number2 == 0) return;
+      number1 = (float)number1;
+      number2 = (float)number2;
+      answer = (number1/number2);
+    break;
+
+    case 'C':
+      return;
+    break;
+
+    default: 
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("No such op");
+      return;
+  }
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Answer: ");
+  lcd.setCursor(0, 1);
+  lcd.print(answer);
+  delay(5000);
 
   
   
