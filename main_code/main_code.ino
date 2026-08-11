@@ -136,9 +136,7 @@ void loop() {
 
     case '/':
       if(number2 == 0) return;
-      number1 = (float)number1;
-      number2 = (float)number2;
-      answer = (number1/number2);
+      answer = (float)number1/number2;
     break;
 
     case 'C':
