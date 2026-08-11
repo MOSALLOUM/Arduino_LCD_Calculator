@@ -1,8 +1,12 @@
 #include <Keypad.h>
 #include <LiquidCrystal_I2C.h>
 
+//Rows and Columns of your matrix
+
 const byte rows = 4;
 const byte cols = 4;
+
+//The mapping you want of the matrix. You can change these around however you like.
 
 char hexakeys[rows][cols] = {
   {'1', '2', '3', '+'},
@@ -11,12 +15,20 @@ char hexakeys[rows][cols] = {
   {'C', '0', '=', '/'}
 };
 
+//Setting the GPIOS.
+
 byte rowpins[rows] = {2,3,4,5};
 byte colpins[cols] = {6,7,8,9};
 
+//Making the keypad instance.
+
 Keypad customKeypad = Keypad(makeKeymap(hexakeys), rowpins, colpins, rows, cols); 
 
+//LCD instance.
+
 LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+//Strings to store in the incoming input.
 
 String num1 = "";
 String num2 = "";
@@ -24,8 +36,6 @@ String num2 = "";
 long number1 = 0;
 long number2 = 0;
 int count = 0;
-int column_counter_1 = 0;
-int column_counter_2 = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -44,8 +54,6 @@ void loop() {
   count = 0;
   number1 = 0;
   number2 = 0;
-  column_counter_1 = 0;
-  column_counter_2 = 0;
   lcd.clear();
   
   char c = customKeypad.getKey();
@@ -65,12 +73,10 @@ void loop() {
 
     num1 += c;
     lcd.print(c);
-    column_counter_1++;
     c = customKeypad.getKey();
     while(c == NO_KEY) {
       c = customKeypad.getKey();
     }
-    lcd.setCursor(num1.length(), 0);
   }
 
   if(c=='C') return;
@@ -92,23 +98,27 @@ void loop() {
 
   lcd.setCursor(0, 1);
   while(d >= '0' && d <= '9') {
+    if(num2.length() >= 10) {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("TOO LONG!");
+      return;
+    }
     num2 += d;
-    lcd.print(num2);
-    column_counter_2++;
+    lcd.print(d);
     d = customKeypad.getKey();
     while(d == NO_KEY) {
       d = customKeypad.getKey();
     }
-    lcd.setCursor(num2.length(), 1);
   }
+
+  if(d == 'C') return;
 
   int j = 0;
   while(num2[j] != '\0') {
     number2 = (number2*10)+(num2[j] - '0');
     j++;
   }
-
-  if(d == 'C') return;
 
   float answer;
   switch(c) {
@@ -142,11 +152,6 @@ void loop() {
       return;
   }
 
-  d = customKeypad.getKey();
-  while(d == NO_KEY) {
-    d = customKeypad.getKey();
-  }
-
   if(d == '='){
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -154,6 +159,10 @@ void loop() {
     lcd.setCursor(0, 1);
     lcd.print(answer);
     delay(5000);
+  } else {
+    lcd.clear();
+    lcd.print("Please press =");
+    return;
   }
 
   
