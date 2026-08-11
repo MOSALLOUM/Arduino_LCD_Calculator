@@ -45,6 +45,7 @@ void setup() {
   lcd.print("WELCOME!");
   delay(3000);
   lcd.clear();
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -67,7 +68,8 @@ void loop() {
   lcd.setCursor(0,0);
   while(c >= '0' && c <= '9') {
 
-    //Hardware limitation, depends on the screen you're using.
+    //Since the data type we're using (long) can store up to 2,147,483,647 which is 10 digits.
+    //This will also affect your results
     if(num1.length() >= 10) {
       lcd.clear();
       lcd.setCursor(0, 0);
@@ -130,7 +132,7 @@ void loop() {
   }
 
   //Setup the operations.
-  float answer;
+  double answer;
   switch(c) {
     case '+':
       answer = number1 + number2;
@@ -141,7 +143,8 @@ void loop() {
     break;
 
     case '*':
-      answer = number1 * number2;
+      answer = (float)number1 * (float)number2;
+      Serial.println(answer);
     break;
 
     case '/':
@@ -175,7 +178,7 @@ void loop() {
     return;
   }
 
-  
+  //Check out the other prototype where I added operation precedent and multiple operands.
   
 }
 
