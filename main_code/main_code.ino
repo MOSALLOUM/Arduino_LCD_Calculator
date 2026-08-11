@@ -9,11 +9,11 @@ const byte cols = 4;
 //The mapping you want of the matrix. You can change these around however you like.
 
 char hexakeys[rows][cols] = {
-  {'1', '2', '3', '+'},
-  {'4', '5', '6', '-'},
-  {'7', '8', '9', '*'},
-  {'C', '0', '=', '/'}
-};
+  {'1', '2', '3', '+'}, // + : addition
+  {'4', '5', '6', '-'}, // - : subtraction
+  {'7', '8', '9', '*'}, // * : multiplication
+  {'C', '0', '=', '/'}  // C : clear ; / : division
+};                      //Your keypad will probably have different keys but you can use whatever.
 
 //Setting the GPIOS.
 
@@ -49,6 +49,7 @@ void setup() {
 
 void loop() {
   
+  //Resetting variables for next itiration.
   num1 = "";
   num2 = "";
   count = 0;
@@ -56,21 +57,25 @@ void loop() {
   number2 = 0;
   lcd.clear();
   
+  //Keeps the arduino checking whether a character has been input or not.
   char c = customKeypad.getKey();
   while(c == NO_KEY) {
     c = customKeypad.getKey();
   }
 
+  //Main input loop, receives the first operand.
   lcd.setCursor(0,0);
   while(c >= '0' && c <= '9') {
 
+    //Hardware limitation, depends on the screen you're using.
     if(num1.length() >= 10) {
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("TOO LONG!");
       return;
     }
-
+    
+    //Adds the recived input from the keypad to the string and prints it on the screen.
     num1 += c;
     lcd.print(c);
     c = customKeypad.getKey();
@@ -79,6 +84,7 @@ void loop() {
     }
   }
 
+  
   if(c=='C') return;
 
   int i = 0;
@@ -112,14 +118,18 @@ void loop() {
     }
   }
 
+  //C is for clear, so we reset the code.
   if(d == 'C') return;
 
+  //Main conversion loop; converts the string into long.
+  //You can use the .toInt() with the string, but I preffered to use a more manual method. 
   int j = 0;
   while(num2[j] != '\0') {
     number2 = (number2*10)+(num2[j] - '0');
     j++;
   }
 
+  //Setup the operations.
   float answer;
   switch(c) {
     case '+':
@@ -135,13 +145,12 @@ void loop() {
     break;
 
     case '/':
-      if(number2 == 0) return;
+      if(number2 == 0) return; //You can add a warning or an error message.
       answer = (float)number1/number2;
     break;
 
     case 'C':
       return;
-    break;
 
     default: 
       lcd.clear();
@@ -149,6 +158,9 @@ void loop() {
       lcd.print("No such op");
       return;
   }
+
+  //Only displays answer after clicking '=', otherwise resets the code.
+  //And d already has the last non-digit character we clicked.
 
   if(d == '='){
     lcd.clear();
