@@ -142,12 +142,19 @@ void loop() {
       return;
   }
 
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Answer: ");
-  lcd.setCursor(0, 1);
-  lcd.print(answer);
-  delay(5000);
+  d = customKeypad.getKey();
+  while(d == NO_KEY) {
+    d = customKeypad.getKey();
+  }
+
+  if(d == '='){
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Answer: ");
+    lcd.setCursor(0, 1);
+    lcd.print(answer);
+    delay(5000);
+  }
 
   
   
