@@ -86,7 +86,7 @@ void loop() {
     }
   }
 
-  
+  //C is for clear, so we reset the code.
   if(c=='C') return;
 
   int i = 0;
@@ -98,6 +98,18 @@ void loop() {
   lcd.setCursor(num1.length(), 0);
   lcd.print(c);
 
+  //In case the user clicked equal with no operator.
+
+  if(c=='=') {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Answer: ");
+    lcd.setCursor(0, 1);
+    lcd.print(number1);
+    delay(5000);
+  }
+
+  //Input second number.
 
   char d = customKeypad.getKey();
   while(d == NO_KEY) {
