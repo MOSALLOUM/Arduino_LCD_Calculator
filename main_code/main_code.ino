@@ -42,7 +42,9 @@ void setup() {
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0);
-  lcd.print("WELCOME!");
+  lcd.print("    WELCOME!    ");
+  lcd.setCursor(0,1);
+  lcd.print(" Arduino Calc. ");
   delay(3000);
   lcd.clear();
   Serial.begin(9600);
